@@ -458,6 +458,35 @@ BarWidget {
 
   // ------------------------------------------------------- bar surface --
 
+  // The chevron glyph points right at 0°. Closed, it points sideways, away
+  // from the screen edge the widget is nearer to (toward the middle).
+  // Open, it turns a quarter toward the card. Angles are picked so every
+  // change is a 90° turn.
+  readonly property bool onRightSide: {
+    var win = gridWindow.barWindow
+    var w = win ? win.width : 0
+    return w > 0 ? gridWindow.anchorPos.x + chevron.width / 2 > w / 2 : true
+  }
+  readonly property bool onLowerHalf: {
+    var win = gridWindow.barWindow
+    var h = win ? win.height : 0
+    return h > 0 ? gridWindow.anchorPos.y + chevron.height / 2 > h / 2 : false
+  }
+  readonly property real chevronAngle: {
+    if (!vertical) {
+      var closed = onRightSide ? 180 : 0
+      var open = barPos === "bottom" ? (onRightSide ? 270 : -90) : 90
+      return gridOpen ? open : closed
+    }
+    var closedV = onLowerHalf ? 270 : 90
+    var openV = barPos === "left" ? (onLowerHalf ? 360 : 0) : 180
+    return gridOpen ? openV : closedV
+  }
+  property real chevronRotation: chevronAngle
+  Behavior on chevronRotation {
+    NumberAnimation { duration: Style.duration(180); easing.type: Easing.OutCubic }
+  }
+
   // Room to drop a dragged bar widget into the tray, open only while one is
   // being dragged.
   Item {
@@ -485,15 +514,10 @@ BarWidget {
     y: root.vertical ? dropZone.height : 0
     width: implicitWidth
     height: implicitHeight
-    active: root.gridOpen
+    // Same color open or closed: the rotation alone says which it is.
     tooltipText: strings.t("tooltip")
-    text: {
-      var open = root.gridOpen
-      if (root.barPos === "bottom") return open ? "" : ""
-      if (root.barPos === "left") return open ? "" : ""
-      if (root.barPos === "right") return open ? "" : ""
-      return open ? "" : ""
-    }
+    text: "\uf054"
+    textRotation: root.chevronRotation
     onPressed: function(button) {
       if (button === Qt.LeftButton) root.toggle()
     }
