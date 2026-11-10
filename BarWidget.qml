@@ -23,8 +23,6 @@ BarWidget {
   id: root
   moduleName: "gusmezomo.traygrid"
 
-  Commons.Translations { id: strings; directory: Qt.resolvedUrl("i18n") }
-
   // ---------------------------------------------------------------- state --
 
   property bool gridOpen: false
@@ -513,7 +511,7 @@ BarWidget {
     width: implicitWidth
     height: implicitHeight
     // Same color open or closed: the rotation alone says which it is.
-    tooltipText: strings.t("tooltip")
+    tooltipText: "Tray"
     text: "\uf054"
     textRotation: root.chevronRotation
     onPressed: function(button) {
@@ -741,7 +739,7 @@ BarWidget {
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
             textFormat: Text.PlainText
-            text: strings.t("empty")
+            text: "Nothing in the tray yet"
             color: root.fg
             font.family: root.fontFamily
             font.pixelSize: Style.font.bodySmall
@@ -752,7 +750,7 @@ BarWidget {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
             textFormat: Text.PlainText
-            text: strings.t("hint")
+            text: "Drag a bar widget onto the arrow to add it here. Drag a tile out to send it back to the bar."
             color: Util.alpha(root.fg, 0.6)
             font.family: root.fontFamily
             font.pixelSize: Style.font.caption
