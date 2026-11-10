@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "gusmezomo.traygrid",
+  "name": "Tray Grid",
+  "version": "1.0.0",
+  "author": "gusmezomo",
+  "description": "Replaces the system tray drawer with a popup grid under the bar: tray-section widgets and running apps' tray icons as tiles you can drag to reorder.",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Tray Grid",
+    "description": "Tray widgets and app icons in a popup grid",
+    "category": "Status",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

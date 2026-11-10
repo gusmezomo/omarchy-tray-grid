@@ -1,0 +1,7 @@
+{
+  "tooltip": "Tray",
+  "empty": "Nothing in the tray yet",
+  "hint": "Drag a bar widget onto the arrow to add it here. Drag a tile out to send it back to the bar.",
+  "dropHere": "Drop here",
+  "back": "Back"
+}
