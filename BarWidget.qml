@@ -31,7 +31,6 @@ BarWidget {
   property bool appMenuOpen: false
   property var activeAppItem: null
   property Item activeAppAnchor: null
-  property string hoveredLabel: ""
   // "<group>:<id>" of the tile a dragged tile would land on.
   property string dropTargetKey: ""
   property bool dragOutside: false
@@ -342,7 +341,6 @@ BarWidget {
   }
 
   onGridOpenChanged: {
-    hoveredLabel = ""
     if (!bar) return
     if (gridOpen) {
       bar.requestPopout(root)
@@ -705,7 +703,6 @@ BarWidget {
               group: "app"
               itemId: String(modelData.id || "")
               tileIndex: index
-              label: root.appTitle(modelData)
 
               TrayIcon {
                 anchors.centerIn: parent
@@ -759,34 +756,6 @@ BarWidget {
             color: Util.alpha(root.fg, 0.6)
             font.family: root.fontFamily
             font.pixelSize: Style.font.caption
-          }
-        }
-
-        // Footer: the hovered app's name, or a grab handle.
-        Item {
-          width: parent.width
-          height: Style.space(18)
-
-          Text {
-            anchors.centerIn: parent
-            width: parent.width
-            visible: root.hoveredLabel !== ""
-            horizontalAlignment: Text.AlignHCenter
-            elide: Text.ElideRight
-            textFormat: Text.PlainText
-            text: root.hoveredLabel
-            color: Util.alpha(root.fg, 0.75)
-            font.family: root.fontFamily
-            font.pixelSize: Style.font.caption
-          }
-
-          Rectangle {
-            anchors.centerIn: parent
-            visible: root.hoveredLabel === ""
-            width: Style.space(40)
-            height: Style.space(4)
-            radius: height / 2
-            color: Util.alpha(root.fg, 0.25)
           }
         }
       }
@@ -1077,7 +1046,6 @@ BarWidget {
     property string group: "app"
     property string itemId: ""
     property int tileIndex: 0
-    property string label: ""
     property point lastScene: Qt.point(0, 0)
     readonly property bool dragging: tileDrag.active
     readonly property bool isDropTarget: root.dropTargetKey !== "" && root.dropTargetKey === group + ":" + itemId
@@ -1108,11 +1076,6 @@ BarWidget {
 
     HoverHandler {
       id: tileHover
-      onHoveredChanged: {
-        if (tile.label === "") return
-        if (hovered) root.hoveredLabel = tile.label
-        else if (root.hoveredLabel === tile.label) root.hoveredLabel = ""
-      }
     }
 
     // Above the content, so it sees the press first; it only takes over once
@@ -1140,7 +1103,6 @@ BarWidget {
         onActiveChanged: {
           if (active) {
             tile.lastScene = centroid.scenePosition
-            root.hoveredLabel = ""
           } else {
             root.dropTile(tile, tile.lastScene)
           }
