@@ -11,8 +11,8 @@ import qs.Commons as Commons
 import qs.Ui
 
 // Tray Grid: stands in for omarchy.tray. Instead of a drawer that slides
-// open along the bar on hover, a click on the chevron opens a card under the
-// bar holding, as tiles:
+// open along the bar, hovering the chevron opens a card under the bar
+// holding, as tiles:
 //   - the bar widgets in the layout's `tray` section (the bar builds them and
 //     hands them to `sectionHost`, as it does for the stock tray; they are
 //     moved into tiles here), and
@@ -303,6 +303,36 @@ BarWidget {
     gridOpen = false
   }
 
+  // Hovering the chevron opens the card; it closes a moment after the
+  // pointer has left both the chevron and the card. The delay covers the
+  // gap between the two. An app's menu or a tile drag holds it open.
+  readonly property bool hoverInside: chevron.tooltipHovered || (gridOpen && cardHover.hovered)
+  onHoverInsideChanged: {
+    if (hoverInside) {
+      hoverCloseTimer.stop()
+      if (!gridOpen) hoverOpenTimer.restart()
+    } else {
+      hoverOpenTimer.stop()
+      if (gridOpen) hoverCloseTimer.restart()
+    }
+  }
+  function recheckHover() {
+    if (gridOpen && !hoverInside) hoverCloseTimer.restart()
+  }
+  Timer {
+    id: hoverOpenTimer
+    interval: 70
+    onTriggered: if (root.hoverInside && !root.gridOpen) root.gridOpen = true
+  }
+  Timer {
+    id: hoverCloseTimer
+    interval: 350
+    onTriggered: {
+      if (root.hoverInside || root.appMenuOpen || root.draggingGroup !== "") return
+      root.close()
+    }
+  }
+
   // The bar asks the open panel to step aside when another one opens.
   // A panel opened from a tile replaces the card; any other closes it.
   function closeForPopoutSwitch() {
@@ -360,7 +390,9 @@ BarWidget {
 
   onAppMenuOpenChanged: {
     if (!appMenuOpen && gridOpen) reclaimTimer.restart()
+    if (!appMenuOpen) recheckHover()
   }
+  onDraggingGroupChanged: if (draggingGroup === "") recheckHover()
 
   Timer { id: popoutCheckTimer; interval: 0; onTriggered: root.checkForeignPopout() }
   Timer {
@@ -511,11 +543,11 @@ BarWidget {
     width: implicitWidth
     height: implicitHeight
     // Same color open or closed: the rotation alone says which it is.
-    tooltipText: "Tray"
+    // No tooltip: hovering opens the card, which would sit under it.
     text: "\uf054"
     textRotation: root.chevronRotation
     onPressed: function(button) {
-      if (button === Qt.LeftButton) root.toggle()
+      if (button === Qt.LeftButton) root.gridOpen = true
     }
   }
 
@@ -629,6 +661,8 @@ BarWidget {
           easing.bezierCurve: Style.easeOut
         }
       }
+
+      HoverHandler { id: cardHover }
 
       // Swallow clicks on the card's empty space so they don't dismiss it.
       MouseArea {

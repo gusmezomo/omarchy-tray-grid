@@ -1,11 +1,11 @@
 # Tray Grid for Omarchy
 
 The Omarchy bar's system tray is a drawer that slides open along the bar when you hover over it.
-Tray Grid replaces that drawer with a click-to-open popup under the bar. Your tray plugins and the tray icons of your running apps are laid out in it as a grid of tiles.
+Tray Grid replaces that drawer with a popup under the bar that opens when you hover the arrow. Your tray plugins and the tray icons of your running apps are laid out in it as a grid of tiles.
 
 ## Features
 
-- **A popup grid instead of a hover drawer.** Click the arrow in the bar to open the grid, and click anywhere else to close it. The tiles never take up room on the bar.
+- **A popup grid instead of a drawer.** Hover the arrow in the bar to open the grid. It closes shortly after the pointer leaves both the arrow and the grid, or when you click anywhere else. The tiles never take up room on the bar.
 - **Plugins and apps together.** Bar widgets in the tray section (for example the Omarchy menu, Superwhisper or Screen Time) appear as tiles, followed by the tray icons of your running apps. Plugin tiles open their panels as they would on the bar. App tiles work as tray icons do: left-click activates the app, right-click opens its menu (submenus included), middle-click does the app's secondary action, and scrolling sends a scroll to the app.
 - **Drag to arrange.** Drag a widget from the bar onto the arrow to move it into the grid. Drag a plugin tile out of the popup to put it back on the bar. Drag a tile onto another tile to reorder them.
 - **Sized to fit.** The popup is only as wide as its tiles. Rows wrap after five tiles, and wider widgets take two cells.
@@ -30,7 +30,7 @@ omarchy restart shell
 
 ## Use
 
-- Click the arrow, or run `omarchy-shell gusmezomo.traygrid toggle` (you can bind it to a key). `open` and `close` also work.
+- Hover (or click) the arrow, or run `omarchy-shell gusmezomo.traygrid toggle` (you can bind it to a key). `open` and `close` also work.
 - To add a widget to the grid, drag it from the bar onto the arrow. A `+` area opens beside the arrow while you drag. You can also run:
 
   ```bash
